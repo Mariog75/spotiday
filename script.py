@@ -2,10 +2,12 @@ import sys
 import requests
 import spotipy
 import json
+import webbrowser
 import time
+from random import randint
 from spotipy import util
 
-username = "11186484468"
+username = '11186484468'
 scope = 'user-top-read'
 
 nrg = 0.0
@@ -66,12 +68,18 @@ if spotify_token:
     trackList = []
     for artist in results2['items']:
         artistList.append(artist['id'])
-    recommended = sp.recommendations(seed_artists = artistList, target_energy = nrg, target_liveness = live, target_tempo = tempo, target_speechiness = speech, target_acousticness = acous, target_instrumentalness = inst, target_danceability = dance, limit=1)
+    for track in results['items']:
+        trackList.append(track['id'])
+    recommended = sp.recommendations(seed_artists = artistList,seed_track=trackList, target_energy = nrg, target_liveness = live, target_tempo = tempo, target_speechiness = speech, target_acousticness = acous, target_instrumentalness = inst, target_danceability = dance, limit=5)
     print(json.dumps(recommended, indent=4))
+    x = randint(0,4)
+    count = 0
     for i in recommended['tracks']:
-        print i['uri']
+        print (i['external_urls']['spotify'])
+        if count == x:
+            webbrowser.open_new(i['external_urls']['spotify'])
+        count = count + 1
   
 
 else:
-    print "Can't get token for", username
-
+    print ("Can't get token for", username)
